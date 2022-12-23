@@ -6,48 +6,17 @@ Gruplandırma işini donanım ile değil de yazılım işi ile layer 2 (Data lin
 VOIP cihazlar trunk konfigürasyonuna ihtiyaç duyarlar. (İlerde işinize yarayacak)
 #### VLAN paketi 802.1q için şu şekildedir:
 6 Byte 
-Dest. MAC
-(Hedef MAC)
-6 Byte
-Source MAC
-(Kaynak MAC)
-4 Byte
-802.1q
-2 Byte
-Ether. Type
-46-1500 Bytes
-Data
-4 Byte
-FCS
+![image](https://user-images.githubusercontent.com/80786294/209307197-7c793ef2-b007-4c4a-8cb7-f0e39c7122de.png)
 
     • Paketimiz hedef cihazın ve çıktığı cihazın MAC adresini taşır. Hedef MAC bilinmiyor ise ARP sorgusu yollanır ve en başta bu alan FFFF lerden oluşur.
     • 802.1q VLAN taginin içerildiği yerdir.
 
-802.1q içeriği şöyledir:
-2 Byte
-TPID
-3 bit
-Priority (CoS)
-Öncelik
-1 bit
-CFI
-12 bit
-VID
-(VLAN ID)
+#### 802.1q içeriği şöyledir:
+![image](https://user-images.githubusercontent.com/80786294/209307259-63639587-34b8-4dd1-95db-df05030ec5f0.png)
 
     • TPID, Ethernet type yerine cihaz bu alanı okumaktadır çünkü aynı yere denk gelmektedirler. Bu alanı okuyan cihaz paketin tag’li olup olmadığını anlayabilir.
     • VID, VLAN ID nin depolandığı yerdir ve 2^12 (4096) -2 yani  4094 adet VLAN tag’i alabilmektedir.
     • Priority, o paketin önceliğini belirtir.
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -60,6 +29,7 @@ VID
     1) Gelen tag’li paketin tagi access tagi ile uyumlu ise (trunk’dan gelmiş olsa bile) paketteki tag’i söker. 
     2) Tag’siz paket herhangi bir durumda çıkışa gelemez çünkü switchin içinde hiçbir zaman tag’siz bir paket bulunmamakta. 
 ### CASE 1:
+![image](https://user-images.githubusercontent.com/80786294/209307335-c963909f-1e06-43f7-89a1-c75171f410b3.png)
 
 Şekilde göründüğü üzere tüm portlar access 10 modunda beklemekteler. 
 PC 1 den PC 2 ye veri gönderimi sırasında port 1 ve 3 switchlerin verilerin giriş kısımları, port 2 ve 4 ise verilerin çıkış kısımları olarak düşünülebilir.
@@ -69,6 +39,7 @@ PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin gi
     2. Port 2 ye gelen paket VLAN ID si kendi ID si ile uyumlu olduğu için paketi alır ve VLAN ID yi geri çıkarır, paketimiz port 3 e kadar tag’siz bir şekilde yoluna devam eder.
     3. Aynı şekilde tag’siz bir şekilde port3 e ulaşan paket kendi tag’ini (VID 10) ekler sıkıntısız bir şekilde port 4 de bu tag’I çıkartıp paketi PC2 ye iletir.
 ### CASE 2:
+![image](https://user-images.githubusercontent.com/80786294/209307349-8bc56e1a-063d-4936-a03d-bdf9292a1aba.png)
 
 #### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID 20 olucak şekilde tag e sahip olur.
@@ -411,9 +382,3 @@ Not 2: Client, server’dan kiralamış olduğu IP adresini DHCPRELEASE paketini
     • Switch’de default olarak portlar açık gelir fakat router da bizim açmamız gerekir.
     • IP adreslerinin sonunda 0 olan adresler network ü temsil eder. Router lar aldığı network IP lerini portlarına atama yapar.
     • Hub Nedir-> Yayın ve haberleşmede kullanılan düşük maliyetli bir cihazdır. Bant genişliğini bütün cihazlara böler, switch’de ise bant genişliğinde azalma olmaz. Ağ içerisinde veri gönderileceği zaman bu veri tüm cihazlara gönderilir.
-    • 
-
-
-Sorular:
-    1. A
-    2. 
