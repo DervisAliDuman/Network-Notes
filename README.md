@@ -284,7 +284,7 @@ RSTP Port Rolleri
 
 ## RSTP Sync Process
 RSTP caching mekanizması konseptini kullanır. (caching en son kullanılan verileri bir yerde depolayıp sonradan ihtiyaç durumunda tekrardan eski işlemleri yapmak yerine depoladığımız cache memory üzerinden direk istenen veriyi bulup çekmek için kullanılan bir yöntemdir). Eğer bir path fail durumunda ise cache üzerinden alternatif bir path bulunur. Ayrıca RSTP Negotiation (Teklif verme gibi düşün) methodunu kullanır.
-Örnek üzerinde daha iyi anlaşılacaktır:
+#### Örnek üzerinde daha iyi anlaşılacaktır:
 
     1- Proposal(teklif) aracılığı ile daha iyi bir root bridge bilgisi geldiği zaman ya da root port değiştiği zaman diğer bridge bunu farkeder. 
     2- Bulunduğumuz bridge yeni root a bağlı olan port hariç tüm designated portları bloklar ve root bridge ile bağlantısı olan port root port seçilir. (Aslında yeni root için downstream yollarını bloklamış olduk).
@@ -307,11 +307,11 @@ Burda asıl amacımız mümkün olduğunca hızlı bir şekilde TC işlemini ger
 Link Down işlemi sonucunda extra bir değişiklik yapılmaz, örneğim MAC tablosu silinmez. Çünkü bağlantı kopması normalde var olan yolların değişmesine neden olmaz.
 Eğer downstream üzerinde hiç alternate port yok ise işte o zaman convergence için herhangi bir iyileştirme yapamamaktayız. 
 Edgelinks forwarding yapsalar bile TC oluşturmazlar ve MAC adreslerini silmezler. Bu da performans açısından önemli bir yer alır. (edgelink derken end-userlardan bahsediyor, hani direk forwardinge geçiyor ya o mevzu)
-Edgeport -> end-user bağlanmasını bekleyen portdur ve direk forwarding state e geçer. Aksi halde devredışı kalır.
-Auto-edge port -> porta end-user bağlanırsa direk forwarding moduna geçer, switch falan bağlanırsa o zaman sırası ile port modlarından geçer.
+#### Edgeport -> end-user bağlanmasını bekleyen portdur ve direk forwarding state e geçer. Aksi halde devredışı kalır.
+#### Auto-edge port -> porta end-user bağlanırsa direk forwarding moduna geçer, switch falan bağlanırsa o zaman sırası ile port modlarından geçer.
 
 ## RSTP Illustrated Ring topology
-    A) Failure 1-> Link Failure in Ring Topology:
+####    A) Failure 1-> Link Failure in Ring Topology:
 Çok önemli not !!! -> Eğer A ile B arasındaki link fail olsa idi o zaman hiçbir değişiklik olmayacaktı çünkü zaten blocked bir link söz konusuydu. Ama eğer resimdeki örnekte olduğu gibi başka bir yerde kopma yaşanırsa işler ilginçleşmeye başlıyor ve şu basamaklar meydana geliyor:
 1->  Cloud 2 ile root bağlantısını sağlayan bridge 3xHello world sinyali süresince bekleyip sonuç alamayınca diyor ki root ile olan bağlantıda bir sıkıntı oluştu. Sonrasında kendini root ilan ediyor.
 2-> Bridge Y’nin önceliğinin daha fazla olduğu bir senaryoda hem Cloud 2 hem de Cloud 3 için root seçildiğini düşünelim. Bundan sonra ise bu bilgiyi downstream aracılığı ile paylaşıyor.
@@ -320,7 +320,7 @@ Auto-edge port -> porta end-user bağlanırsa direk forwarding moduna geçer, sw
 4-> Bridge B, Y den gelen sinyali alır ve A ya daha iyi bir root BDPU su için sorgu yollar. Bu bilgi Root a ulaştığı zaman bridge B tekrardan gerçek root ile senkronize hale gelebilir ve Blocked portu açar.
 5-> Blocked port’un açılmasıyla birlikte TC flagi yollanır
 
-    B) Failure 2-> Link Failure in Ring Topology for Root Bridge:
+####    B) Failure 2-> Link Failure in Ring Topology for Root Bridge:
  
 Üstteki örnekten (failure 1) farkı şu ki, bu sefer sadece tek taraftan root a bağlantı kopması deği. Bu olayda 2 tarafta root ile bağlantısını kaybediyor.
 
@@ -330,13 +330,6 @@ Sağdaki resimde gördüğünüz üzere cache’de duran Bridge R’ın BDPU su 
 2 ayrı segmentte root seçtiğimiz için ise 2 kat yavaşlama riskimiz var. Bu nasıl oluyor? Y’nin en iyi BID ye sahip olduğu senaryoda 2 segment kendi arasında root seçtikten sonra durum kimin önce kendini tanıttığına kalıyor (race condition). Eğer önce A, Y’nin bilgisini alır ise convergence time iki kat artmış oluyor. Tam tersi durumda normal convergence time kadar bekliyoruz.
 
 ## TOPLANIN OLAY VAR (RSTP WORST CASE SENARIO) Counting to Infinity Problem
-
-
-
-
-
-
-
 
 
 
@@ -367,7 +360,7 @@ Token’ler aracılığı ile haberleşme sağlanır.
 Unidirectional haberleşmede bağlantı kopması durumunda haberleşme bozulacaktır.
 Paketin heryere ulaşması ve her yoldan geçmesi performansı düşürmektedir.
 MRP (Metro Ring Protocol) (bekle hemen bakma benim de kafam karışık)
-Layer 2 loop’ları engeller ve hızlı bir reconvergence hızına sahiptirler. STP ye alternatiftir ve özellikle MAN(Metropolitan Area Networks) için kullanımı STP ye göre daha iyidir çünkü: 
+#### Layer 2 loop’ları engeller ve hızlı bir reconvergence hızına sahiptirler. STP ye alternatiftir ve özellikle MAN(Metropolitan Area Networks) için kullanımı STP ye göre daha iyidir çünkü: 
     • STP de max. 7 node bulunabilirken Metro Ring daha çok node a sahip olabilmekte.
     • STP de convergence time çok daha yavaş. 
 MRP’de de STP deki gibi bloklu portlar bulunur. Herhangi bir link kopması durumunda bloklu portlar açılıp yeniden bağlantı kurulabilir. Bloklu portlar forwarding yapamaz. 
@@ -376,12 +369,12 @@ MRP’de de STP deki gibi bloklu portlar bulunur. Herhangi bir link kopması dur
 
 ## QoS (Quality of Service)  (bekle hemen bakma benim de kafam karışık)
 Çok önemli dataların belli bir öncelik ve güvenlik ile yollanmasını sağlar. Qos bazı mekanizmalar sayesinde Network trafiğini kontrol eder. Genellikle IPTV’lerde, oyunlarda, streamingde vb. yerlerde kullanılır.
-Network trafiğini kontrol eder dedik, peki nedir bu trafik çeşitleri :
+### Network trafiğini kontrol eder dedik, peki nedir bu trafik çeşitleri :
     • Bandwith: Linkin hızıdır. QoS router’a bandwith i nasıl ve ne kadar kullanabilceğini ayarlayabilir.
     • Delay : Gönderilen paketin source ile destination arasında geçen zamana denir. QoS her tip trafik için priority queue ile organize eder.
     • Data Loss : Bağlantı yoğunluğu(izdihamı) nedeni ile oluşan paket kaybıdır.
     • Jitter : Trafik düzensiz zamanlarda veya yanlış sırada geldiğinde meydana gelen parçalanmayı açıklar ve hızını gösterir.
-Types of Delays:
+### Types of Delays:
     • Serialization Delay: Interface’in verileri fiziksel bir ortama kodlaması için gereken süreyi ifade eder.
 Formülü ise->>  ( # of bits ) / (bits per second)  
     • Propagation Delay:  Kablo üzerinde bir bitin uçtan uca gitmesi için gereken süreyi ifade eder.
@@ -389,11 +382,11 @@ Formülü ise->>  ( # of bits ) / (bits per second)
     • Queuing Delay: Çıkış kuyruğunda önceden kuyruğa alınmış paketlerin serialization işlemini beklerken geçen süredir.
     • Network (Provider) Delay: WAN sağlayıcısının bulutunda geçen süredir. Bulut’un structure’unu bilmek zor olacağı için bu ağ gecikmesini hesaplamak da çok zor olabilmektedir.
     • Shaping Delay: Tıkanıklık (congestion) oluşması nedeniyle paketler drop olabilmekte ve bu sorunun düzeltilebilmesi için trafiği yavaşlatan mekanizmalar kullanılır. Bu mekanizmalar tarafından olan gecikmelere denir.
-QoS Methodologies
+### QoS Methodologies
     • Best Effort QoS: Aslında bu en basit tabirle QoS olmama durumudur. Trafiği First come First serve mantığı ile yönlendirmekteyiz. Basit implement edilir ve default olarak switchlerde bu yöntem kullanılır. Internet de bu şekilde çalışmaktadır. Anlayacağınız ekstra bir şey yapmıyor.
     • Integrated Services (IntServ) QoS: Aynı zamanda end-to-end ya da hard QoS olarak da bilinir. An Admission Control protocol requeste kaynakları allocate ettikten sonra yanıt verir. Kaynaklar belli bir request için allocate edilmez ise reddedilir. Tüm cihazlar QoS desteklemelidir. 2 yönden kullanması çok da iyi değildir (unscable): Reserve edilebilcek sınırlı bandwith var ve çok fazla ek yükü var. RSVP (bu ne?) bu protokolün bir örneğidir.
     • Differentiated Services (DiffServ) QoS: Trafik tipleri spesifik sınıflara göre organize ediliyor, sonrasında kendi sınıflandırılmalarına göre identify edilir. Bu sınıflandırmaya göre servis edilir. Soft QoS olarak da bilinir çünkü garanti bir şekilde amacımıza ulaştıramamaktadır.
-QoS Tools
+### QoS Tools
     • Classification and Marking: Classification is a method of identifying and then organizing traffic based on service requirements. This traffic is then marked or tagged based on its classification, so that the traffic can be differentiated.
     •  Queuing : Bildiğin sıralama mekanizması ama bunun bazı çeşitleri var: • First-In First-Out (FIFO) • Priority Queuing (PQ) • Custom Queuing (CQ) • Weighted Fair Queuing (WFQ) • Class-Based Weighted Fair Queuing (CBWFQ) • Low-Latency Queuing (LLQ)
     •  Queue Congestion Avoidance : Anlamadım
@@ -402,7 +395,7 @@ QoS Tools
 ## DHCP (Dynamic Host Control Protocol)  
 Otomatik olarak IP atanmasını sağlıyor. Hani sen switch’e ilk bağlanırken bilgisayara IP atıyorsun ya, işte ona gerek kalmıyor, her bilgisayara ya da cihaza tek tek statik IP atman çok zaman alırdı yoksa. Aynı wifi’ye bağlanırken yazan gibi, telefonun aslında istemci; sunucudan DHCP ile otomatik bir IP adresi istiyor ve sen ekranda “IP adresi alınıyor…” yazısı görüyorsun. 
 #RULE: Bilgisayar dünyasında en önemli şeylerden biri kullanıcıyı gereksiz detaylara sokmamaktır. Kullanıcının ağa bağlanmak için IP adresi nedir bilmesine gerek yoktur. Bilgiyi kullanıcıdan soyutlama işidir bu aslında ve genelde OOP de karşımıza çıkan abstraction olarak bilinir.
-Peki bu işlem nasıl olur? 
+### Peki bu işlem nasıl olur? 
     • Eğer DHCP istemcisi olan bir client bağlanırsa, client DHCP server bulabilmek için otomatik olarak DHCP Discover mesajını broadcast olarak yollar.
     • DHCP server bulunur ise DHCP Offer paketi ile cevap verir. Bu paket önerilen IP adresini, subnet maskesini vesaire içerir.
     • Gelen offer client’a ulaşınca alınca DHCP Request (kabul edip etmediği bilgisini taşır) paketi ile cevap verir. Burada amacımız, eğer ağ üzerinde başka server var ise o karışıklığı gidermek için hangi server’ı seçtiğini belirtir. 
