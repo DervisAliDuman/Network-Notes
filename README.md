@@ -5,7 +5,7 @@ Sanal yerel ağlar oluşturarak kullanıcıların ve kaynakların gruplandırıl
 Gruplandırma işini donanım ile değil de yazılım işi ile layer 2 (Data link layer) üzerinden hallettiği için ekstra donanım kullanma maaliyeti olmamaktadır.
 VOIP cihazlar trunk konfigürasyonuna ihtiyaç duyarlar. (İlerde işinize yarayacak)
 #### VLAN paketi 802.1q için şu şekildedir:
-6 Byte 
+ 
 ![image](https://user-images.githubusercontent.com/80786294/209307197-7c793ef2-b007-4c4a-8cb7-f0e39c7122de.png)
 
     • Paketimiz hedef cihazın ve çıktığı cihazın MAC adresini taşır. Hedef MAC bilinmiyor ise ARP sorgusu yollanır ve en başta bu alan FFFF lerden oluşur.
@@ -56,6 +56,7 @@ PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin gi
     2)  Tag’siz paket gelemez.
 
 ### CASE :
+![image](https://user-images.githubusercontent.com/80786294/209307661-5c150021-a725-4340-92d9-6d737a6d1a56.png)
 
 Şekilde göründüğü üzere port 2 ve 3 trunk modunda 3 VLAN değeri (10/20/30)  beklemekteler. 
 #### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
@@ -69,12 +70,6 @@ PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin gi
 
 
 
-
-
-
-
-
-
 ## Native VLAN nasıl çalışır?
     • Native Vlan modu açık ise eğer başta hiçbir değişiklik yapmazsanız default VLAN ID değerini Native VLAN ID olarak olarak kullanacaktır.
 #### Girişte -> 
@@ -84,18 +79,23 @@ PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin gi
     1) Gelen tag’li paketin VLAN ID si ile kendi native ID si aynı olduğu durumlarda paket üzerindeki tag’i söker.
     2) Tag’siz paket herhangi bir durumda çıkışa gelemez çünkü switchin içinde hiçbir zaman tag’siz bir paket bulunmamakta. 
 ### CASE 1:
+![image](https://user-images.githubusercontent.com/80786294/209307685-31cc7063-e3a2-4131-89fe-b63ba46f3bbd.png)
 
 #### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID 50 olucak şekilde native tag e sahip olur.
     2. Port 2 ye gelen paket VLAN ID si kendi Native VLAN ID si ile aynı olduğu için paketi alır ve VLAN ID yi geri çıkarır, paketimiz port 3 e kadar tag’siz bir şekilde yoluna devam eder.
     3. Aynı şekilde tag’siz bir şekilde port3 e ulaşan paket kendi tag’ini (VID 150) ekler sıkıntısız bir şekilde port 4 de bu 150 Native tag’ini çıkartıp paketi PC2 ye iletir.
 ### CASE 2:
+![image](https://user-images.githubusercontent.com/80786294/209307692-0a213b64-a3a0-4a10-ad7c-6d4f82507fc5.png)
 
 #### Bu durumda PC1 den PC2 ye VLAN 20 tag’ine sahip bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID’sini sadece ve sadece Trunk değerler (10/20/30) için aynısı var mı diye bakar, var olduğunu görüp tag’i sökmeden paketi iletmeye devam eder. (50 tag’inde bir paket gelseydi paketin iletimi sağlanamayacaktı.)
     2. Port 2 ye gelen paket VLAN ID si kendi trunk ID si ile uyumlu olduğu için paketi alır ve paketi port3 e iletir.
     3. Port3 ve 4 ile de kendi tagi uyumlu olduğu için paket başlangıç ID si olan 20 tag’i ile beraber PC 2 ye iletilmiş olur.
 ! Burda olan sıkıntı şu ki PC ler tag’li paket okuyamaz.  Evet paket PC2 ye geldi ama paketi okuyamayacağı için iletişim sağlanamaz. Ne durumda tag’i çıkartabiliriz ? Port 4 access 20 olabilir di ve bu tag normal olarak trunk da yer almazdı ya da native tag’i 20 olabilirdi.
+
+
+
 
 ## Hybrid VLAN mode nasıl çalışır ?
 #### 3 tane port değeri kullanılmakta: 
@@ -109,7 +109,8 @@ PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin gi
     1) Tag’li paket geldiyse eğer tag’imiz trunk tag’lerinden birini sağlıyor ise tag’i sökmeden iletir.
     2) Tag’li paket geldiyse eğer tag’imiz access(untagged) tag’lerinden birini sağlıyor ise tag’i söküp paketi iletir.
 
-### CASE 1:
+### CASE :
+![image](https://user-images.githubusercontent.com/80786294/209307731-586d3e13-de9f-403b-b3c4-6caeb7a60db8.png)
 
 Port 1 (Access):  ->  Access 30
 Port 2 (Hybrid):  -> Trunk 10/20    -> Untagged 30/40    ->  Default 50 
@@ -131,7 +132,7 @@ Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     • İkisi de aynı işi yapmakta fakat VTP cisco cihazlar için üretildiğinden sadece cisco cihazlarda çalışabilmekte. GVRP daha generic olduğu için cisco dahil tüm cihazlarda çalışabilmektedir.
     • Birden fazla switchin yer aldığı durumlarda yapılan ayarın diğer switchlere de uygulanması çok zaman alır ve bazı switchleri değiştirmeyi unutabiliriz ya da hatalı değişebiliriz fakat GVRP sayesinde bir switch üzerinde yapılan değişiklik diğer switchlerin de güncellenmesini sağlamakta.
     • Bir değişiklik yapıldığı zaman VTP configuration revision number denen sayaç 1 arttırılır ve diğer switchler de kendi numarasının yetersiz olduğunu görüp o cihazdan gerekli konfigürasyonları alıp kendini günceller.
-STP (Spanning Tree Protocol)
+## STP (Spanning Tree Protocol)
     • 802.1 standartıdır ve tüm köprü görevi gören cihazlar arasında tek aktif bir bağlantı kalması için bazı portları bloklar. Bu sayede öngörülemez loopların önüne geçilir.
     • STP kullanılan ağlarda her bir ağ başına bir tane root bridge, her bir non-root bridge’de bir tane root port ve her bir parçada trafiğin geçmesi için bir tane designated port (forwarding state) bulunur. (Root bridge’nin tüm portları designated port modundadır)
     • Bridge ID aslında köprü görevi gören cihazın MAC adresidir.
@@ -157,6 +158,8 @@ Convergence Time: STP protokolünün basamaklarının tümünün (Root bridge se
     • Eğer BDPU aging kullanılıyor ise ve bir link hatası algılandıysa (maxage içerisinde BDPU sinyali alınamadıysa) o zaman tekrardan yeni bir STP düzeni kurulacağı için convergence basamaklarının bazıları yapılır. Bunun için gerekli süre ise en az 2xForward_Time, en fazla ise 2xForward_Time + Max_age kadardır.
     • Bir değişiklik sonucu topology change sinyali geldi diyelim. Bu durumda en ufacık değişiklik bile bir sürü alternatif yol ortaya çıkarmış olabilir. Bu yüzden yeni costlar yeni yollar öğrenilebilmesi adına Mac adres table dahil tüm table’lar temizlenip baştan doldurulması gerekmektedir.
 #### STP Topology Change Sinyali gelince ne olur?
+![image](https://user-images.githubusercontent.com/80786294/209307852-d98d071d-4a3f-4073-93ff-0cfe890e644b.png)
+
 1->> Sıkıntı çıkan Bridge sinyali root portu aracılığı ile diğer bridge’lere iletir taki root porta bu sinyal ulaşana kadar iletilir. (Upstream)
 2->> Bu TC BDPU sinyali root a ulaştıktan sonra, root’dan TCN Acknowledge bit’lerin ayarlanması için sinyal yollanır.
 3->> Root dan TCN(Topology Change Notification) sinyali diğer bridglere yollanır (downstream). Bu flag’in set olma süresi Max_Age + Forward_Time kadardır.
@@ -166,13 +169,15 @@ Convergence Time: STP protokolünün basamaklarının tümünün (Root bridge se
 
 ## STP PortFast
 Loop olma riski olmayan son kullanıcılar (Host ya da enduser denebilir) BDPU paketi kullanmazlar. Portumuzun sırayla blockingden diğer port state’lerine geçiş yapmalarına gerek olmadığı için STP’ye çok fazla zaman ayrılmasını önler. TCN (Toplogy change notification) portFast açık olan porttan yollanamaz ve bu porttan switch bağlanamaz.
-STP Extensions: UplinkFast & Flexlinks
+## STP Extensions: UplinkFast & Flexlinks
 UplinkFast alternate port mantığını kullanır. Eğer root port bağlantısında sorun yaşanırsa alternate port, root port gibi davranır. Eğer birden fazla blocked port var ise en düşük cost’a sahip olan root port seçilir. Frame gönderilme sıkılığını {“spanning-tree”,” uplink-fast”,”max- update-rate”} komutları ile ayarlayabiliriz. Link hatasından kurtulmak bu sayede bir saniyenin altında gerçekleştirilebilmektedir.
 Bu sayede en az 30 saniye (2Xforward) sürecek convergence time süreyi kullanmaya gerek kalmadı.
 (Bazı sıkıntıları varmış anlamadım)
 Flexlink’i uplinkFast in STP siz bir versiyonu gibi düşünebiliriz. 2 port arasında link oluşturmak için “switchport backup” komutu kullanılır ve linklerdeki STP devre dışı bırakılır. Standby link hala gelen paketleri yoksayar ve mac address table I doldurmazken diğeri depolar. Birincil link eğer fail olursa standby link aktifleşir ve mac adressleri taşır. Bu işlemler için gerekli komutlar -> “mac address-table move {receive|transmit}” ve “switchport backup interface x/y mmu” dur.
 Flexlink STP yi deaktif edip root port değişiminde topology change prosedüründe bize yardımcı olur fakat bazı problemleri vardır. (Bilmiyorum bana da öğretin)
-Link fail case without STP extension
+## Link fail case without STP extension
+![image](https://user-images.githubusercontent.com/80786294/209307949-dfbb7cbd-9f23-4603-96a5-7d3242235430.png)
+
 Diagram üzerinden açıklamak istersek. 
 Bridge A -> root bridge
 B’nin bir portu blocked durumda.
@@ -182,6 +187,8 @@ Bridge C -> Inferior BDPU ile C nin root olduğunu iddia ediyor. (Inferior BDPU 
     3- Bu şekilde en başta max_age bekledik, şimdi ise port state lerinin değişmelerini bekledik. Bu yüzden harcadığımız zaman = max age timer + (forward delay timer) x 2 oluyor.
 Superrior BDPU -> Designated modda ve Forwarding state den çıkmış olup blocked porta giden BDPU paketine denir.
 ## STP Extensions: BackboneFast
+![image](https://user-images.githubusercontent.com/80786294/209307989-e1ae5610-a298-4cb5-9bb5-f7ad923dcb0b.png)
+
 Diagram üzerinden açıklamak istersek. 
 A -> root bridge
 B’nin portu alternate port.
@@ -226,11 +233,14 @@ Filtreleme açılırken BDPU yok sayılacağından STP esasen deredışı bırak
     3) RSTP de port forwarding state e geçmeli mi diye karar verirken timer kullanmaz, böylece oradaki zamandan tasarruf edilmiş olur.
 Root Port – STP deki gibi Non-root bridge’den root bridge’e giden, cost’u en düşük porttur. Root Bridge’e forwarding yapar.
 #### RSTP BPDU Yapısı:
+![image](https://user-images.githubusercontent.com/80786294/209308103-df26a28a-91dd-4405-b7f6-bf4f103f04d8.png)
 
 RSTP’de port rolleri eklendiği için, BPDU yapısına bu roller de eklenmiştir. Flag bölümündeki Port Role kısmında şu seçenekler vardır: Unknown, Alternate / Backup port, Root port, Designated port.
 
 
-Proposal/Agreement (P/A) mekanizması, designated bir portun çok hızlı bir şekilde forward state’e geçmesini sağlar. Aşağıdaki figurler, bu mekanizmayı göstermektedir.
+Proposal/Agreement (P/A) mekanizması, designated bir portun çok hızlı bir şekilde forward state’e geçmesini sağlar. Aşağıdaki figurler, bu mekanizmayı göstermektedir. </br>
+![image](https://user-images.githubusercontent.com/80786294/209308158-2a493459-aaa9-4bc6-b9db-c48319a3ca61.png)
+
 
 #### Proposing: Bir port, discarding veya learning state’deyken bu değer 1 olarak ayarlanır. Proposal field’ı 1 olan mesaj, downstream cihaza yollanır.
 
@@ -241,7 +251,9 @@ Proposal/Agreement (P/A) mekanizması, designated bir portun çok hızlı bir ş
 #### Synced: Bir port discarding state’e geçtikten sonra,  eğer bir alternate, backup ya da edge port ise synced değişkenini 1 yapar fakat eğer root port ise diğer portları izler. Diğer tüm portlar synced değişkenlerini 1 yaptıktan sonra, root port da synced değişkenini 1 yapar ve RST BPDU’sunu Agreement field 1 olarak yollar.
 
 #### Agreed: Designated port, port rolü root port olan ve Agreement field’ı 1 olan RST BPDU’yu aldıktan sonra agreed değişkeni 1 olarak ayarlanır. Bu değişken 1 olur olmaz, port hemen forwarding state’e geçer.
-RSTP Port Rolleri
+### RSTP Port Rolleri
+![image](https://user-images.githubusercontent.com/80786294/209308371-ad6fe4b3-c328-4509-9cf3-ed586e22ad4b.png)
+
     • RSTP, link çöktüğünde convergence time’ın çok olmaması için bridge’lere farklı port rolleri eklemiştir.
 #### Designated Port - Bağlı olduğu segmentte BDPU paketlerini forward’lar.
 #### Alternate Port – Root Bridge’e yeniden bağlantı kurulabilmesi için bekleyen alternatif porttur. Gönderilen BPDU Paketleri’ni aldıktan sonra, forward’lamak için alternatif bir port olarak bloke olarak bekletir.
@@ -256,6 +268,7 @@ RSTP Port Rolleri
 ## RSTP Sync Process
 RSTP caching mekanizması konseptini kullanır. (caching en son kullanılan verileri bir yerde depolayıp sonradan ihtiyaç durumunda tekrardan eski işlemleri yapmak yerine depoladığımız cache memory üzerinden direk istenen veriyi bulup çekmek için kullanılan bir yöntemdir). Eğer bir path fail durumunda ise cache üzerinden alternatif bir path bulunur. Ayrıca RSTP Negotiation (Teklif verme gibi düşün) methodunu kullanır.
 #### Örnek üzerinde daha iyi anlaşılacaktır:
+![image](https://user-images.githubusercontent.com/80786294/209308414-6b2b736e-ccbd-4a65-a726-eee2c98e5490.png)
 
     1- Proposal(teklif) aracılığı ile daha iyi bir root bridge bilgisi geldiği zaman ya da root port değiştiği zaman diğer bridge bunu farkeder. 
     2- Bulunduğumuz bridge yeni root a bağlı olan port hariç tüm designated portları bloklar ve root bridge ile bağlantısı olan port root port seçilir. (Aslında yeni root için downstream yollarını bloklamış olduk).
@@ -270,6 +283,8 @@ RSTP’de blocked portlar sadece tek bir özel durumda BDPU sinyallerini kabul e
 
 
 ## RSTP Topology Change
+![image](https://user-images.githubusercontent.com/80786294/209308431-0c595587-5bd8-405a-8764-c6666fb9016d.png)
+
 Yandaki figürdeki upstream işlemi TCWhile time (2xHelloTime) kadar zaman alır. Bu sinyal Upstream’den ya da downstream’den gelebilir. Bu durumda aşağıdakiler gerçekleşir.
     1-  TC BDPU gelen portlar haricindeki tüm portlarda MAC adresleri silinir.
     2-  TCwhile timer süresince bunu tekrarlar ve tüm BDPU larda TC bitini set eder.
@@ -283,6 +298,8 @@ Edgelinks forwarding yapsalar bile TC oluşturmazlar ve MAC adreslerini silmezle
 
 ## RSTP Illustrated Ring topology
 ####    A) Failure 1-> Link Failure in Ring Topology:
+![image](https://user-images.githubusercontent.com/80786294/209308451-8bb4069d-2b80-4032-96b0-1486632ce142.png)
+
 Çok önemli not !!! -> Eğer A ile B arasındaki link fail olsa idi o zaman hiçbir değişiklik olmayacaktı çünkü zaten blocked bir link söz konusuydu. Ama eğer resimdeki örnekte olduğu gibi başka bir yerde kopma yaşanırsa işler ilginçleşmeye başlıyor ve şu basamaklar meydana geliyor:
 1->  Cloud 2 ile root bağlantısını sağlayan bridge 3xHello world sinyali süresince bekleyip sonuç alamayınca diyor ki root ile olan bağlantıda bir sıkıntı oluştu. Sonrasında kendini root ilan ediyor.
 2-> Bridge Y’nin önceliğinin daha fazla olduğu bir senaryoda hem Cloud 2 hem de Cloud 3 için root seçildiğini düşünelim. Bundan sonra ise bu bilgiyi downstream aracılığı ile paylaşıyor.
@@ -292,6 +309,9 @@ Edgelinks forwarding yapsalar bile TC oluşturmazlar ve MAC adreslerini silmezle
 5-> Blocked port’un açılmasıyla birlikte TC flagi yollanır
 
 ####    B) Failure 2-> Link Failure in Ring Topology for Root Bridge:
+![image](https://user-images.githubusercontent.com/80786294/209308473-8f82ad2f-fdc8-4c7e-a494-cacba5757774.png)
+![image](https://user-images.githubusercontent.com/80786294/209308489-f6622b6e-0e39-4dd9-b8e5-e1a0b4adb341.png)
+
  
 Üstteki örnekten (failure 1) farkı şu ki, bu sefer sadece tek taraftan root a bağlantı kopması deği. Bu olayda 2 tarafta root ile bağlantısını kaybediyor.
 
@@ -301,6 +321,8 @@ Sağdaki resimde gördüğünüz üzere cache’de duran Bridge R’ın BDPU su 
 2 ayrı segmentte root seçtiğimiz için ise 2 kat yavaşlama riskimiz var. Bu nasıl oluyor? Y’nin en iyi BID ye sahip olduğu senaryoda 2 segment kendi arasında root seçtikten sonra durum kimin önce kendini tanıttığına kalıyor (race condition). Eğer önce A, Y’nin bilgisini alır ise convergence time iki kat artmış oluyor. Tam tersi durumda normal convergence time kadar bekliyoruz.
 
 ## TOPLANIN OLAY VAR (RSTP WORST CASE SENARIO) Counting to Infinity Problem
+![image](https://user-images.githubusercontent.com/80786294/209308521-a3803ec5-36ba-46d5-8c03-0c7a709603a2.png)
+![image](https://user-images.githubusercontent.com/80786294/209308531-f8308977-ccbe-491d-ba07-939abf8b0b4a.png)
 
 
 
@@ -308,6 +330,7 @@ Sağdaki resimde gördüğünüz üzere cache’de duran Bridge R’ın BDPU su 
 BID si en düşük bridge 1 olduğu için onun yeni root olması lazım ama bir de ne olsun. RSTP nin doğası gereği her bridge cache’de tuttuğu root BID sinin bulunduğu BPDU’yu paylaşıyor R is root diye.
 Bu BPDU dönüp dolanıp Bridge 1’e geri dönüyor ve bridge 1 de masum bakıyo ve kendi BID’sinden düşük olduğu için R is root diyor. Halbuki R bridge’i aslında piyasada yok sadece BPDU’su dolanıyor. 
 Bu problem Max_Age kadar devam etmektedir, sonrasında Bridge 1 durumu anlayıp yeni topolojiyi oluşturması gerekmektedir. O zamana kadar eski root olan Bridge R’ın BPDU’su paylaşılmaya devam edilecektir.
+![image](https://user-images.githubusercontent.com/80786294/209308597-47d06b6f-1747-4057-8a17-ff3504d2f39a.png)
 
 (burayı biraz açmam gerekcek)
 
@@ -315,6 +338,8 @@ Bu problem Max_Age kadar devam etmektedir, sonrasında Bridge 1 durumu anlayıp 
 
 
 ## MSTP (Multiple Spanning Tree Protocol)
+![image](https://user-images.githubusercontent.com/80786294/209308628-b1a8a21f-4a51-49b4-9b80-8edc93baf433.png)
+
 STP ve RSTP de bloklu portlardan trafik akmamakta ve biz bunu istemiyoruz ve önüne geçmek istiyoruz çünkü trafik ne kadar düzenli dağılırsa o kadar efektif bir kullanım sağlanır. MSTP ile aynı ağ üzerinde birden fazla STP topolojisi (birden fazla tree) oluşturup her bir STP ağı için ayrı portlar bloklu şekilde davranması mümkün hale geliyor. 
 MSTP nin en temel farklarından biri, root bridge seçerken artık BID ye bakmıyoruz. Kendimiz MSTP yi ayarlarken her cihaza o ağaç için gerekli önceliği veriyoruz.
 Bir diğer fark ise MSTP ile farklı VLAN’lerle farklı ağaçlar kendi içlerinde haberleşebilmekteler.
@@ -330,7 +355,9 @@ Bağlantı şekilleri unidirectional (tek yönlü) ya da bidirectional (çok yö
 Token’ler aracılığı ile haberleşme sağlanır.
 Unidirectional haberleşmede bağlantı kopması durumunda haberleşme bozulacaktır.
 Paketin heryere ulaşması ve her yoldan geçmesi performansı düşürmektedir.
-MRP (Metro Ring Protocol) (bekle hemen bakma benim de kafam karışık)
+## MRP (Metro Ring Protocol) (bekle hemen bakma benim de kafam karışık)
+![image](https://user-images.githubusercontent.com/80786294/209308698-94514273-bdb1-406c-ab73-681c80a67cf6.png)
+
 #### Layer 2 loop’ları engeller ve hızlı bir reconvergence hızına sahiptirler. STP ye alternatiftir ve özellikle MAN(Metropolitan Area Networks) için kullanımı STP ye göre daha iyidir çünkü: 
     • STP de max. 7 node bulunabilirken Metro Ring daha çok node a sahip olabilmekte.
     • STP de convergence time çok daha yavaş. 
