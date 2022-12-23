@@ -53,45 +53,45 @@ VID
 
 ## Access port mode nasıl çalışır?
     • Sadece 1 tane VLAN değerine sahip olabilir. (access 100 gibi)
-Girişte ->
+#### Girişte ->
     1)  Tag’siz paket geldiği durumda porta tanımlı olan access vlan tagini ekler
     2) Tag’li paket Kabul edebilmesi için discard tagged modunun açık olmaması gerekmektedir, bu durumda tag uyuşuyor ise sökülmeden devam edebilir.
-Çıkışta -> 
+#### Çıkışta -> 
     1) Gelen tag’li paketin tagi access tagi ile uyumlu ise (trunk’dan gelmiş olsa bile) paketteki tag’i söker. 
     2) Tag’siz paket herhangi bir durumda çıkışa gelemez çünkü switchin içinde hiçbir zaman tag’siz bir paket bulunmamakta. 
-CASE 1:
+### CASE 1:
 
 Şekilde göründüğü üzere tüm portlar access 10 modunda beklemekteler. 
 PC 1 den PC 2 ye veri gönderimi sırasında port 1 ve 3 switchlerin verilerin giriş kısımları, port 2 ve 4 ise verilerin çıkış kısımları olarak düşünülebilir.
 PC 2 den PC 1 e veri gönderimi sırasında port 2 ve 4 switchlerin verilerin giriş kısımları, port 1 ve 3 ise verilerin çıkış kısımları olarak düşünülebilir.
-Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
+#### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket içeride VLAN ID 10 olucak şekilde tag e sahip olur.
     2. Port 2 ye gelen paket VLAN ID si kendi ID si ile uyumlu olduğu için paketi alır ve VLAN ID yi geri çıkarır, paketimiz port 3 e kadar tag’siz bir şekilde yoluna devam eder.
     3. Aynı şekilde tag’siz bir şekilde port3 e ulaşan paket kendi tag’ini (VID 10) ekler sıkıntısız bir şekilde port 4 de bu tag’I çıkartıp paketi PC2 ye iletir.
-CASE 2:
+### CASE 2:
 
-Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
+#### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID 20 olucak şekilde tag e sahip olur.
     2. Port 2 ye gelen paket VLAN ID si kendi ID si ile uyumlu olduğu için paketi alır ve VLAN ID yi geri çıkarır, paketimiz port 3 e kadar tag’siz bir şekilde yoluna devam eder.
     3. Aynı şekilde tag’siz bir şekilde port3 e ulaşan paket kendi tag’ini (VID 10) ekler sıkıntısız bir şekilde port 4 de bu tag’I çıkartıp paketi PC2 ye iletir.
 
-## VLAN trunk port mode nasıl çal## ışır ?
+## VLAN trunk port mode nasıl çalışır ?
     • Trunk port Access portunun aksine birden fazla tag bekleyebilir fakat tagsiz paketleri kabul etmez.
-Girişte ->
+#### Girişte ->
     1)  Tag’li paket gelince trunk için Kabul edilebilir taglerden biri ile uyumlu olması durumunda paketi iletmeye devam eder.
     2) Tag’siz paket Kabul edemez (native vlan aktif değilken).
-Çıkışta -> 
+#### Çıkışta -> 
     1) Gelen tag’li paketin tagi trunk VLAN değerlerinden biri ile bile aynı ise tagi sökmeden aynen iletmeye devam eder.
     2)  Tag’siz paket gelemez.
 
-CASE :
+### CASE :
 
 Şekilde göründüğü üzere port 2 ve 3 trunk modunda 3 VLAN değeri (10/20/30)  beklemekteler. 
-Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
+#### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket içeride VLAN ID 10 olucak şekilde tag e sahip olur.
     2. Port 2 ye gelen paket VLAN ID’si kendi ID’lerinden biri ile (VLAN10) uyumlu olduğu için paketi alır ve access portunun aksine VLAN ID yi çıkartmadan iletir, paketimiz port 3 e kadar 10 tagine sahip bir şekilde yoluna devam eder.
     3. VLAN 10 tagine sahip olan paket port3 e ulaşır ve tagi sökülmeden port4 de iletilir. Port 4 de  access portu olduğu için bu tag’i çıkartıp paketi PC2 ye iletir.
-Diğer durumlar:
+#### Diğer durumlar:
     1. Tag’ler trunk portu ile uyuşmaz ise o zaman o paketin o porttan iletimi mümkün olmaz.
     2. Tag’siz paket trunk portuna gelirse paket iletilmez.
 
@@ -106,39 +106,39 @@ Diğer durumlar:
 
 ## Native VLAN nasıl çalışır?
     • Native Vlan modu açık ise eğer başta hiçbir değişiklik yapmazsanız default VLAN ID değerini Native VLAN ID olarak olarak kullanacaktır.
-Girişte -> 
+#### Girişte -> 
     1) Tagsiz bir paket switchin native modu açık bir trunk portuna geldiyse ve port discard untagged modunda değil ise Switch üzerinde bulunan native VLAN adı verilen VLAN tagini o pakete ekler.
     2) Tag’li paket geldiğinde trunk tagleri ile uyumluluğuna bakılır(native tag ile uyuşmasına bakılmaz) , uymuyor ise paketi geçirmez.
-Çıkışta -> 
+#### Çıkışta -> 
     1) Gelen tag’li paketin VLAN ID si ile kendi native ID si aynı olduğu durumlarda paket üzerindeki tag’i söker.
     2) Tag’siz paket herhangi bir durumda çıkışa gelemez çünkü switchin içinde hiçbir zaman tag’siz bir paket bulunmamakta. 
-CASE 1:
+### CASE 1:
 
-Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
+#### Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID 50 olucak şekilde native tag e sahip olur.
     2. Port 2 ye gelen paket VLAN ID si kendi Native VLAN ID si ile aynı olduğu için paketi alır ve VLAN ID yi geri çıkarır, paketimiz port 3 e kadar tag’siz bir şekilde yoluna devam eder.
     3. Aynı şekilde tag’siz bir şekilde port3 e ulaşan paket kendi tag’ini (VID 150) ekler sıkıntısız bir şekilde port 4 de bu 150 Native tag’ini çıkartıp paketi PC2 ye iletir.
-CASE 2:
+### CASE 2:
 
-Bu durumda PC1 den PC2 ye VLAN 20 tag’ine sahip bir paket göndermek istersek sırasıyla:
+#### Bu durumda PC1 den PC2 ye VLAN 20 tag’ine sahip bir paket göndermek istersek sırasıyla:
     1. Port 1 e gelen paket VLAN ID’sini sadece ve sadece Trunk değerler (10/20/30) için aynısı var mı diye bakar, var olduğunu görüp tag’i sökmeden paketi iletmeye devam eder. (50 tag’inde bir paket gelseydi paketin iletimi sağlanamayacaktı.)
     2. Port 2 ye gelen paket VLAN ID si kendi trunk ID si ile uyumlu olduğu için paketi alır ve paketi port3 e iletir.
     3. Port3 ve 4 ile de kendi tagi uyumlu olduğu için paket başlangıç ID si olan 20 tag’i ile beraber PC 2 ye iletilmiş olur.
 ! Burda olan sıkıntı şu ki PC ler tag’li paket okuyamaz.  Evet paket PC2 ye geldi ama paketi okuyamayacağı için iletişim sağlanamaz. Ne durumda tag’i çıkartabiliriz ? Port 4 access 20 olabilir di ve bu tag normal olarak trunk da yer almazdı ya da native tag’i 20 olabilirdi.
 
 ## Hybrid VLAN mode nasıl çalışır ?
-3 tane port değeri kullanılmakta: 
+#### 3 tane port değeri kullanılmakta: 
     1. Trunk için beklenen değerler -> Normal bir trunk portunun işlevini yerine getirebilir.
     2. Untagged için beklenen değerler -> Access portu gibi çalışır fakat farklı olarak birden fazla ID bekleyebilir. Çıkış yaparken untagged tag’lerinden biri ile uyumlu bir tag geldi ise o tag’i söküp ilerletir.
     3. Default (Native) için -> Paket girişte tag’siz bir biçimde gelirse Native tag’ini alır ve normalde de olduğu gibi bu tag’den sadece bir tane vardır.
-Girişte -> 
+#### Girişte -> 
     1) Tag’siz paket geldiyse Native(default) VLAN tagini ekler.
     2) Tag’li paket geldiyse tag trunk ya da untagged tag değerlerinden birini sağlıyor ise paketi aynı tag’i ile Kabul eder.
-Çıkışta -> 
+#### Çıkışta -> 
     1) Tag’li paket geldiyse eğer tag’imiz trunk tag’lerinden birini sağlıyor ise tag’i sökmeden iletir.
     2) Tag’li paket geldiyse eğer tag’imiz access(untagged) tag’lerinden birini sağlıyor ise tag’i söküp paketi iletir.
 
-CASE 1:
+### CASE 1:
 
 Port 1 (Access):  ->  Access 30
 Port 2 (Hybrid):  -> Trunk 10/20    -> Untagged 30/40    ->  Default 50 
@@ -165,7 +165,7 @@ STP (Spanning Tree Protocol)
     • STP kullanılan ağlarda her bir ağ başına bir tane root bridge, her bir non-root bridge’de bir tane root port ve her bir parçada trafiğin geçmesi için bir tane designated port (forwarding state) bulunur. (Root bridge’nin tüm portları designated port modundadır)
     • Bridge ID aslında köprü görevi gören cihazın MAC adresidir.
 BPDU (Bridge protocol data unit): Bu paketler STP ile ilgili bilgileri tutar. Mesela BID tutar. BID ise bridge’e ait olan priority ve MAC adres değerlerinin bulunduğu bir tag’dir. (Priority 16 bit , MAC 48 bit olacak şekildedir.) İlk kısım (significant) priority bit den oluştuğu için priority, MAC adresten önemlidir.
-Nasıl çalışır? 
+#### Nasıl çalışır? 
     1. Başlangıç olarak tüm switchler kendilerinin root bridge olduğunu iddia eder ve hepsi BPDU yollar.
     2. Her 2 saniyede bir BDPU sinyalleri yollanır ve bu sayede en düşük BID ye sahip bridge, root bridge olarak seçilir, diğerleri kendilerinin root olmadığını anladıklarından itibaren root bridge’in (O anlık root bridge değil de kendisinden daha iyi bir BID değerine sahip bir bridge varsa onu iletir) verisini iletirler.
     3. Root Bridge portlarını designated port moduna alır ve forwarding (iletim) state’ine geçiş yapar. Sonra diğer bridglere hello sinyali yollar.
@@ -177,15 +177,15 @@ Nasıl çalışır?
     9. 2 Designated port çakışınca en yüksek cost’a sahip olan blocklanır, eğer costlar eşit ise en yüksek BID ye sahip olan port blocklanır. Eğer aynı BID ye sahipse (kendisi ile loop var ise) o zaman port numarasına bakılır.
     10. RSTP için root bridge haricindeki diğer switchlerin root ya da designated olarak seçilmeyen portları alternate port olarak seçilir ve blocking state de olduğu için gelen paketleri yok sayar.
 Convergence Time: STP protokolünün basamaklarının tümünün (Root bridge seçimi, port modlarının atanması…) tamamlanması ya da sproblem oluşması durumunda yeniden STP düzeninin oluşması için geçen zamana denir.
-STP Timers : 
+#### STP Timers : 
     • Hello timer (default 2 second): Sistemin hala ayakta olup olmadığını kontrol etmeye yarar. Hello paketleri içerisinde BDPU paketi bulunur. Sürekli olarak yollanır.
     • MaxAge (10xHello time): Switch’in hello sinyali bekleme süresidir. Bu süre içerisinde hello mesajı gelmesi beklenir. Gelmemesi durumunda Topology change sinyali yollanır.
     • Forward delay (default 15 second): Switch’in portlarının state değişimi arasındaki geçen zamandır.
-STP Convergence In General: 
+#### STP Convergence In General: 
     • STP protokolünün basamaklarının tümünün (Root bridge seçimi, port modlarının atanması…) tamamlanması için geçen zamana denir.
     • Eğer BDPU aging kullanılıyor ise ve bir link hatası algılandıysa (maxage içerisinde BDPU sinyali alınamadıysa) o zaman tekrardan yeni bir STP düzeni kurulacağı için convergence basamaklarının bazıları yapılır. Bunun için gerekli süre ise en az 2xForward_Time, en fazla ise 2xForward_Time + Max_age kadardır.
     • Bir değişiklik sonucu topology change sinyali geldi diyelim. Bu durumda en ufacık değişiklik bile bir sürü alternatif yol ortaya çıkarmış olabilir. Bu yüzden yeni costlar yeni yollar öğrenilebilmesi adına Mac adres table dahil tüm table’lar temizlenip baştan doldurulması gerekmektedir.
-STP Topology Change Sinyali gelince ne olur?
+#### STP Topology Change Sinyali gelince ne olur?
 1->> Sıkıntı çıkan Bridge sinyali root portu aracılığı ile diğer bridge’lere iletir taki root porta bu sinyal ulaşana kadar iletilir. (Upstream)
 2->> Bu TC BDPU sinyali root a ulaştıktan sonra, root’dan TCN Acknowledge bit’lerin ayarlanması için sinyal yollanır.
 3->> Root dan TCN(Topology Change Notification) sinyali diğer bridglere yollanır (downstream). Bu flag’in set olma süresi Max_Age + Forward_Time kadardır.
@@ -210,7 +210,7 @@ Bridge C -> Inferior BDPU ile C nin root olduğunu iddia ediyor. (Inferior BDPU 
     2- Max_Age süresi bittikten sonra artık C deki port listening state’ine geçiyor ve A dan gelen BDPU yu değerlendirmeye başlıyor. Sırasıyla 3 state e giriyo; listening ile A nın root olduğunu anlıyor, learning ile MAC adreslerini baştan dolduruyor sonra da forwarding state’e geçiyor.
     3- Bu şekilde en başta max_age bekledik, şimdi ise port state lerinin değişmelerini bekledik. Bu yüzden harcadığımız zaman = max age timer + (forward delay timer) x 2 oluyor.
 Superrior BDPU -> Designated modda ve Forwarding state den çıkmış olup blocked porta giden BDPU paketine denir.
-STP Extensions: BackboneFast
+## STP Extensions: BackboneFast
 Diagram üzerinden açıklamak istersek. 
 A -> root bridge
 B’nin portu alternate port.
@@ -229,19 +229,19 @@ Sonra B ise önceki root ile olan bağlantısının hala var olup olmadığını
 Diğer bir fark ise 4. Maddede ki gibi sadece 20 saniye olan max_age den kar etmemizi sağlıyor. 50 saniye yerine 30 saniye sürüyor çünkü 5. Maddede olduğu gibi max_age beklemek yerine direk stp yi yeniden kurmaya başladık. Bu convergence time sadece 2 x forwarding time kadar sürmektedir.
 
 ## Protecting STP 
-STP 2 nedenle ataklara hassas:
+#### STP 2 nedenle ataklara hassas:
     1) Root Bridge en düşük BID ye sahip olan seçilmekte (Her zaman optimal ve stabil değil. Kötü niyetli bir şekilde ya da yanlışlıkla sisteme daha düşük BID ye sahip cihaz takılabilir.)
     2) STP, komşu switchlerden gelen BDPU’ları Kabul ederek topolojiyi oluşturur.
 Protection için 3 tane mekanizma kullanılır: Root Guard, BPDU Guard, BPDU Filtering
 Bunlar Cisco’da default olarak disabled haldedir.
-• Root Guard 
+### Root Guard 
 Yetkisi olmayan cihazın kendini root olarak tanıtmasını engeller. Eğer root guard açık bir porta daha iyi bir BDPU (superior BDPU) gelirse blocklanır sonra root-inconsistent (tutarsız) hale gelir ve artık frame yollamayı bırakır fakat BDPU’ları dinlemeye devam eder. Superior BDPU gelmeyi bırakır bırakmaz, port eski stp düzeninde devam eder.
 Root guard portlara özgüdür ve her port için “spanning-tree guard root” komutuyla ayrı ayrı açılabilir.
 Root-inconsistent haldeki portları görüntülemek için” show spanning-tree inconsistentports” komutu kullanılabilir. 
-• BPDU Guard 
+### BPDU Guard 
 Bu portfast de hani sadece host bağlanmasını istiyorduk yani loop oluşması olası cihazlar (switch etc.) istemiyorduk. Neden? çünkü portfast STP’yi devredışı bırakmıyor sadece state’lere girmesini ve topology change ile uğraşmasını engelliyor. Hala BDPU’ları Kabul ettiği için loop oluşcak olursa bir anda broadcast storm oluşabilir.
 BDPU guard ile ne olursa olsun porta herhangi bir BDPU geldiği an o portu devre dışı bırakır.
-• BPDU Filtering
+### BPDU Filtering
 BDPU’ların porttan gönderilmesini engeller. PortFast ile birlikte etkinleştirilip kullanılmalıdır. Konfigürasyonuna göre BDPU geldiği an BDPU filtering 2 şekilde davranabilir:
     1) Eğer filtreleme global olarak etkinleştirilmişse, gelen BDPU portFast’I devre dışı bırakır. Sonra normal STP çalışır mı öyle bir şeyler yazıyor anlarsanız bana da anlatın. Protokoldeyim Derviş adım. Burda yoksam bile numaramı bulun arayın söyleyin bu tip eksikleri. Teşekkür ediyorum çok incesiniz :D
     2) Tüm interface’lerde filtreleme açıldıysa o zaman gelen BDPU droplanır.
@@ -249,38 +249,38 @@ Filtreleme açılırken BDPU yok sayılacağından STP esasen deredışı bırak
 
 
 ## RSTP (Rapid Spanning Tree Protocol)
-    • STP den farklı olarak;
+#### STP den farklı olarak;
     1) Hello sinyali sadece root bridge’den değil, tüm switch’lerden gelir.
     2) STP’de maxage timer’ı (default 20 sn) vardı ve eğer bu süre içerisinde hiçbir BDPU paketi ulaşmaz ise bir şeylerin sıkıntılı olduğuna karar veriyordu.  Bu olay RSTP için ise 3xHello time kadar beklenir eğer o süre içerisinde bir BDPU paketi gelmez ise o zaman uyarı sinyali yollanır.
     3) RSTP de port forwarding state e geçmeli mi diye karar verirken timer kullanmaz, böylece oradaki zamandan tasarruf edilmiş olur.
 Root Port – STP deki gibi Non-root bridge’den root bridge’e giden, cost’u en düşük porttur. Root Bridge’e forwarding yapar.
-RSTP BPDU Yapısı:
+#### RSTP BPDU Yapısı:
 
 RSTP’de port rolleri eklendiği için, BPDU yapısına bu roller de eklenmiştir. Flag bölümündeki Port Role kısmında şu seçenekler vardır: Unknown, Alternate / Backup port, Root port, Designated port.
 
 
 Proposal/Agreement (P/A) mekanizması, designated bir portun çok hızlı bir şekilde forward state’e geçmesini sağlar. Aşağıdaki figurler, bu mekanizmayı göstermektedir.
 
-Proposing: Bir port, discarding veya learning state’deyken bu değer 1 olarak ayarlanır. Proposal field’ı 1 olan mesaj, downstream cihaza yollanır.
+#### Proposing: Bir port, discarding veya learning state’deyken bu değer 1 olarak ayarlanır. Proposal field’ı 1 olan mesaj, downstream cihaza yollanır.
 
-Proposed: Komşu cihazın designated portundan BPDU proposal field’ı 1 olan mesajı alan port, designated olan portu forwarding state’e sokar.
+#### Proposed: Komşu cihazın designated portundan BPDU proposal field’ı 1 olan mesajı alan port, designated olan portu forwarding state’e sokar.
 
-Sync: proposed değişkeni 1 olarak ayarlandıktan sonra, proposal’ı alan root port sync değişkenini tüm portlar için 1 yapar. Sync 1 olan non-edge portların hepsi discarding state’e geçer.
+#### Sync: proposed değişkeni 1 olarak ayarlandıktan sonra, proposal’ı alan root port sync değişkenini tüm portlar için 1 yapar. Sync 1 olan non-edge portların hepsi discarding state’e geçer.
 
-Synced: Bir port discarding state’e geçtikten sonra,  eğer bir alternate, backup ya da edge port ise synced değişkenini 1 yapar fakat eğer root port ise diğer portları izler. Diğer tüm portlar synced değişkenlerini 1 yaptıktan sonra, root port da synced değişkenini 1 yapar ve RST BPDU’sunu Agreement field 1 olarak yollar.
+#### Synced: Bir port discarding state’e geçtikten sonra,  eğer bir alternate, backup ya da edge port ise synced değişkenini 1 yapar fakat eğer root port ise diğer portları izler. Diğer tüm portlar synced değişkenlerini 1 yaptıktan sonra, root port da synced değişkenini 1 yapar ve RST BPDU’sunu Agreement field 1 olarak yollar.
 
-Agreed: Designated port, port rolü root port olan ve Agreement field’ı 1 olan RST BPDU’yu aldıktan sonra agreed değişkeni 1 olarak ayarlanır. Bu değişken 1 olur olmaz, port hemen forwarding state’e geçer.
+#### Agreed: Designated port, port rolü root port olan ve Agreement field’ı 1 olan RST BPDU’yu aldıktan sonra agreed değişkeni 1 olarak ayarlanır. Bu değişken 1 olur olmaz, port hemen forwarding state’e geçer.
 RSTP Port Rolleri
     • RSTP, link çöktüğünde convergence time’ın çok olmaması için bridge’lere farklı port rolleri eklemiştir.
-Designated Port - Bağlı olduğu segmentte BDPU paketlerini forward’lar.
-Alternate Port – Root Bridge’e yeniden bağlantı kurulabilmesi için bekleyen alternatif porttur. Gönderilen BPDU Paketleri’ni aldıktan sonra, forward’lamak için alternatif bir port olarak bloke olarak bekletir.
-Backup Port – Önceden bağlı olan bir bridge için yedek olarak bekletilen port. BPDU paketlerini alır.
-Disabled Port – BPDU paketleri almaz.
+#### Designated Port - Bağlı olduğu segmentte BDPU paketlerini forward’lar.
+#### Alternate Port – Root Bridge’e yeniden bağlantı kurulabilmesi için bekleyen alternatif porttur. Gönderilen BPDU Paketleri’ni aldıktan sonra, forward’lamak için alternatif bir port olarak bloke olarak bekletir.
+#### Backup Port – Önceden bağlı olan bir bridge için yedek olarak bekletilen port. BPDU paketlerini alır.
+#### Disabled Port – BPDU paketleri almaz.
 
-Port state’leri ise 3 tanedir:
-Discarding – port üzerinden data yollanmaz. Port block’ludur. BPDU paketleri alınır.
-Learning- Port henüz frame’leri yollamaz. Bu state, MAC adreslerini tabloya ekliyor demektir.
-Forwarding- Normal bir şekilde data alımı ve gönderimi gerçekleşir.
+### Port state’leri ise 3 tanedir:
+#### Discarding – port üzerinden data yollanmaz. Port block’ludur. BPDU paketleri alınır.
+#### Learning- Port henüz frame’leri yollamaz. Bu state, MAC adreslerini tabloya ekliyor demektir.
+#### Forwarding- Normal bir şekilde data alımı ve gönderimi gerçekleşir.
 
 ## RSTP Sync Process
 RSTP caching mekanizması konseptini kullanır. (caching en son kullanılan verileri bir yerde depolayıp sonradan ihtiyaç durumunda tekrardan eski işlemleri yapmak yerine depoladığımız cache memory üzerinden direk istenen veriyi bulup çekmek için kullanılan bir yöntemdir). Eğer bir path fail durumunda ise cache üzerinden alternatif bir path bulunur. Ayrıca RSTP Negotiation (Teklif verme gibi düşün) methodunu kullanır.
