@@ -2,9 +2,9 @@
 
 ## VLAN (Virtual Local Area Network) Nedir?
 Sanal yerel ağlar oluşturarak kullanıcıların ve kaynakların gruplandırılmasını sağlar ve bu gruplandırmalar portlara atanır.
-Gruplandırma işini donanım ile değil de yazılım işi ile layer 2 (Data link layer) üzerinden hallettiği için ekstra donanım kullanma maaliyeti olmamaktadır.## 
+Gruplandırma işini donanım ile değil de yazılım işi ile layer 2 (Data link layer) üzerinden hallettiği için ekstra donanım kullanma maaliyeti olmamaktadır.
 VOIP cihazlar trunk konfigürasyonuna ihtiyaç duyarlar. (İlerde işinize yarayacak)
-VLAN paketi 802.1q için şu şekildedir:
+###### VLAN paketi 802.1q için şu şekildedir:
 6 Byte 
 Dest. MAC
 (Hedef MAC)
@@ -84,7 +84,7 @@ Girişte ->
     1) Gelen tag’li paketin tagi trunk VLAN değerlerinden biri ile bile aynı ise tagi sökmeden aynen iletmeye devam eder.
     2)  Tag’siz paket gelemez.
 
-CASE 1:
+CASE :
 
 Şekilde göründüğü üzere port 2 ve 3 trunk modunda 3 VLAN değeri (10/20/30)  beklemekteler. 
 Bu durumda PC1 den PC2 ye tag’siz bir paket göndermek istersek sırasıyla:
